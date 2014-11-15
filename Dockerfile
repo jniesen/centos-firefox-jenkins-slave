@@ -10,7 +10,7 @@ ENV RUBYGEM_VERSION 2.0.7
 # Install dependencies
 RUN yum update -y
 RUN yum install -y git
-RUN yum install -y java-1.7.0-openjdk
+RUN yum install -y java-1.6.0-openjdk
 RUN yum install -y firefox
 RUN yum install -y xorg-x11-server-Xvfb
 RUN yum install -y Xorg
