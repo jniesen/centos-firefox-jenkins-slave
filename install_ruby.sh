@@ -19,7 +19,7 @@ configure_make_install() {
   local curdir=${pwd}
 
   cd /usr/local/src/ruby-${RUBY_VERSION} \
-    && ./configure \
+    && ./configure --disable-install-doc \
     && make \
     && make install
 

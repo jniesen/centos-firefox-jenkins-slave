@@ -8,9 +8,16 @@ ENV RUBY_VERSION 2.0.0-p576
 ENV RUBYGEM_VERSION 2.0.7
 
 # Install dependencies
+RUN yum update -y
 RUN yum install -y git
 RUN yum install -y java-1.7.0-openjdk
 RUN yum install -y firefox
+RUN yum install -y xorg-x11-server-Xvfb
+RUN yum install -y Xorg
+RUN yum install -y openssh-server
+
+# Fix D-bus error from Xvfb
+RUN dbus-uuidgen > /var/lib/dbus/machine-id
 
 # Copy ruby install scripts
 COPY prep_for_ruby_install.sh /tmp/prep_for_ruby_install.sh
@@ -34,9 +41,17 @@ RUN gem install bundler --no-ri --no-rdoc
 RUN adduser ${JENKINS_USER}
 RUN echo "${JENKINS_USER}:${JENKINS_USER_PASS}" | chpasswd
 
+# Create server keys
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
+
 # Needed to connect to master
 EXPOSE 22
 
-# Start SSH daemon
-CMD ["/usr/bin/sshd", "-D"]
+# Copy start script
+COPY start.sh /home/root/start.sh
+RUN chmod +x /home/root/start.sh
+
+# Start xvfb, selenium and ssh daemon
+CMD ["/home/root/start.sh"]
 
