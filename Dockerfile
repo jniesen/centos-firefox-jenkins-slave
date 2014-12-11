@@ -42,12 +42,16 @@ RUN gem install bundler --no-ri --no-rdoc
 RUN adduser ${JENKINS_USER}
 RUN echo "${JENKINS_USER}:${JENKINS_USER_PASS}" | chpasswd
 
+# Add service account keys
 RUN mkdir /home/jenkins/.ssh
 COPY config /home/jenkins/.ssh/config
+COPY id_rsa /home/jenkins/.ssh/id_rsa
+COPY id_rsa.pub /home/jenkins/.ssh/id_rsa.pub
 
 # Create server keys
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
+RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd
 
 # Needed to connect to master
 EXPOSE 22
@@ -58,4 +62,3 @@ RUN chmod +x /home/root/start.sh
 
 # Start xvfb, selenium and ssh daemon
 CMD ["/home/root/start.sh"]
-
