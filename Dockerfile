@@ -41,6 +41,9 @@ RUN gem install bundler --no-ri --no-rdoc
 RUN adduser ${JENKINS_USER}
 RUN echo "${JENKINS_USER}:${JENKINS_USER_PASS}" | chpasswd
 
+RUN mkdir /home/jenkins/.ssh
+COPY config /home/jenkins/.ssh/config
+
 # Create server keys
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
