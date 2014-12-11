@@ -15,6 +15,7 @@ RUN yum install -y firefox
 RUN yum install -y xorg-x11-server-Xvfb
 RUN yum install -y Xorg
 RUN yum install -y openssh-server
+RUN yum install -y which
 
 # Fix D-bus error from Xvfb
 RUN dbus-uuidgen > /var/lib/dbus/machine-id
